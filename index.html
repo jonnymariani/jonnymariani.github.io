@@ -1,0 +1,82 @@
+<style>
+    #follow {
+        position: absolute;
+        text-align: center;
+    }
+
+
+.clica{
+    width: 150px;
+    height: 150px;
+    border-radius: 15px 15px 15px 0px;
+    background-color: brown;
+    margin: auto;
+    margin-top: 10%;
+}
+
+.clica:hover{
+    transform: rotate(10deg);
+}
+</style>
+
+
+<html>
+
+<head></head>
+
+<body onmousemove="getCursorPosition(event)">
+
+    <div class="clica" onclick="cavalo()">
+
+    </div>
+
+
+    <div id="follow">
+        <img src="tomekkk.gif" draggable="false">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</body>
+
+</html>
+
+<script>
+    var xCursorPosition;
+    var yCursorPosition;
+
+    function getCursorPosition(event) {
+        xCursorPosition = event.clientX;
+        yCursorPosition = event.clientY;
+    }
+
+    var tome = false;
+    $("#follow").hide();
+
+    function cavalo(){
+        tome = true;
+        $('.clica').hide();
+        $("#follow").show();
+
+        $("#follow").css({
+            left: xCursorPosition - 140,
+            top: yCursorPosition - 90
+        });
+
+
+        new Audio('soca.mp3').play();
+
+    }
+
+    $(document).mousemove(function (e) {
+        if(tome){         
+            $("#follow").css({
+                left: e.pageX - 140,
+                top: e.pageY - 90
+            });
+        }        
+       
+        
+    });
+
+</script>
