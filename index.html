@@ -4,19 +4,18 @@
         text-align: center;
     }
 
+    .clica {
+        width: 30px;
+        height: 30px;
+        border-radius: 15px 15px 15px 0px;
+        background-color: red;
+        margin: auto;
+        margin-top: 10%;
+    }
 
-.clica{
-    width: 150px;
-    height: 150px;
-    border-radius: 15px 15px 15px 0px;
-    background-color: brown;
-    margin: auto;
-    margin-top: 10%;
-}
-
-.clica:hover{
-    transform: rotate(10deg);
-}
+    .clica:hover {
+        transform: rotate(10deg);
+    }
 </style>
 
 
@@ -26,10 +25,7 @@
 
 <body onmousemove="getCursorPosition(event)">
 
-    <div class="clica" onclick="cavalo()">
-
-    </div>
-
+    <div class="clica" id="clica" onclick="cavalo()" onmouseenter="troslei()"></div>
 
     <div id="follow">
         <img src="tomekkk.gif" draggable="false">
@@ -53,7 +49,19 @@
     var tome = false;
     $("#follow").hide();
 
-    function cavalo(){
+    var counter = randomIntFromInterval(6, 14);
+
+    function troslei() {
+        if (counter >= 1) {
+            x._moveOnce();
+            x.setSpeed(randomIntFromInterval(2000, 4000));
+            counter--;
+        }
+
+    }
+
+    function cavalo() {
+
         tome = true;
         $('.clica').hide();
         $("#follow").show();
@@ -63,20 +71,73 @@
             top: yCursorPosition - 90
         });
 
-
         new Audio('soca.mp3').play();
-
     }
 
+
     $(document).mousemove(function (e) {
-        if(tome){         
+        if (tome) {
             $("#follow").css({
                 left: e.pageX - 140,
                 top: e.pageY - 90
             });
-        }        
-       
-        
+        }
     });
 
+
+
+
+    function RandomObjectMover(obj, container) {
+        this.$object = obj;
+        this.$container = container;
+        this.pixels_per_second = 3000;
+        this.current_position = { x: 0, y: 0 };
+        this.is_running = false;
+    }
+
+
+    RandomObjectMover.prototype.setSpeed = function (pxPerSec) {
+        this.pixels_per_second = pxPerSec;
+    }
+
+    RandomObjectMover.prototype._getContainerDimensions = function () {
+        return { 'height': 300, 'width': 300 };
+    }
+
+    RandomObjectMover.prototype._generateNewPosition = function () {
+        var containerSize = this._getContainerDimensions();
+        var availableHeight = containerSize.height - this.$object.clientHeight;
+        var availableWidth = containerSize.width - this.$object.clientHeight;
+
+        var y = Math.floor(Math.random() * availableHeight);
+        var x = Math.floor(Math.random() * availableWidth);
+
+        return { x: x, y: y };
+    }
+
+    RandomObjectMover.prototype._calcDelta = function (a, b) {
+        var dx = a.x - b.x;
+        var dy = a.y - b.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        return dist;
+    }
+
+    RandomObjectMover.prototype._moveOnce = function () {
+        var next = this._generateNewPosition();
+
+        var delta = this._calcDelta(this.current_position, next);
+
+        var speed = Math.round((delta / this.pixels_per_second) * 100) / 100;
+
+        this.$object.style.transition = 'transform ' + speed + 's linear';
+        this.$object.style.transform = 'translate3d(' + next.x + 'px, ' + next.y + 'px, 0)';
+
+        this.current_position = next;
+    };
+
+    var x = new RandomObjectMover(document.getElementById('clica'), window);
+
+    function randomIntFromInterval(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min)
+    }
 </script>
